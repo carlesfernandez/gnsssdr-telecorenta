@@ -23,7 +23,7 @@ docker pull carlesfernandez/gnsssdr-telecorenta:latest
 
 Check that you can run it:
 ```
-docker run -it --rm carlesfernandez/gnsssdr-telecorenta gnss-sdr –-version
+docker run -it --rm carlesfernandez/gnsssdr-telecorenta gnss-sdr --version
 ```
 
 You should get something similar to:
