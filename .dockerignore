@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2024, Carles Fernandez-Prades <carles.fernandez@cttc.es>
+# SPDX-License-Identifier: MIT
+.git
+.cache
+.gitignore
+pics
+README.md
+LICENSE
