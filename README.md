@@ -13,7 +13,7 @@ gnsssdr-telecorenta
 
 This image contains GNSS-SDR with the drivers supporting the RTL-SDR v4 dongle.
 
-![RTL-SDR v4](./pics/RTLSDRv4.png "RTL-SDR v4")
+![RTL-SDR v4](./pics/RTL-SDRv4.png "RTL-SDR v4")
 
 Pull the image. From your terminal:
 
