@@ -8,71 +8,94 @@ SPDX-FileCopyrightText: 2024 Carles Fernandez-Prades <cfernandez@cttc.es>
 )
 <!-- prettier-ignore-end -->
 
-gnsssdr-telecorenta
--------------------
-
-This image contains GNSS-SDR with the drivers supporting the RTL-SDR v4 dongle.
+This repository contains the necessary data to build a Docker image with [GNSS-SDR](https://gnss-sdr.org), including the appropriate software drivers to support the [RTL-SDR v4](https://www.rtl-sdr.com/v4/) radio-frequency front-end. Additionally, this file provides instructions for downloading and using the image immediately, eliminating the need for a build process.
 
 ![RTL-SDR v4](./pics/RTL-SDRv4.png "RTL-SDR v4")
 
+The Docker image has already been built for you and is [available on Docker Hub](https://hub.docker.com/repository/docker/carlesfernandez/gnsssdr-telecorenta/), ready for download. Please refer to the instructions below.
+
+Before using the image, ensure that your system is properly configured and that you have gathered the necessary data from your specific setup. Please note that GNSS-SDR processing requires substantial computational power, and not all machines may be capable of sustaining real-time operation.
+
+Table of Contents:
+- [Preparing your setup](#preparing-your-setup)
+  - [Radio-frequency front-end](#radio-frequency-front-end)
+  - [Setup for Microsoft Windows](#setup-for-microsoft-windows)
+  - [Setup for GNU/Linux](#setup-for-gnulinux)
+- [Download and use the Docker image](#download-and-use-the-docker-image)
+- [Example of a GNSS-SDR configuration file](#example-of-a-gnss-sdr-configuration-file)
+
+
+# Preparing your setup
+
+## Radio-frequency front-end
+
+Any software-defined receiver requires two pieces of hardware to convert the received electromagnetic waves into a stream of 0s and 1s. This process involves:
+
+* An antenna, which converts the received electromagnetic waves into voltage variations, and
+* A device that amplifies, filters, and downconverts those voltage variations to baseband. This is followed by sampling and quantifying the signal, ultimately delivering a stream of 0s and 1s that a computer can process. This component is known as the *radio-frequency front-end*, which is precisely what the RTL-SDR v4 USB dongle performs.
+
+To proceed, you will need an RTL-SDR v4 dongle and an **active** GPS antenna. An *active* antenna contains a built-in Low Noise Amplifier (LNA) that requires a DC power supply delivered through the coaxial cable. Fortunately, the RTL-SDR v4 can supply this power. Simply connect your antenna to the USB dongle, and the software configuration will handle the rest.
+
+**When running the receiver, ensure that the antenna is placed where it has a clear line of sight to a significant portion of the sky.**
+
 ## Setup for Microsoft Windows
 
-You must be running Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11 to use the commands below.
+To run the following commands, you must be using Windows 10 version 2004 or later (Build 19041 and higher) or Windows 11.
 
-1. Install Windows Subsystem for Linux (WSL): Open PowerShell or Windows Command Prompt in administrator mode by right-clicking and selecting "Run as administrator", enter the `wsl --install` command, then restart your machine.
+1. Install the Windows Subsystem for Linux (WSL): Open PowerShell or the Windows Command Prompt in administrator mode by right-clicking and selecting "Run as administrator." Enter the following command and restart your computer:
     ```
     wsl --install
     ```
 
-2. Install Docker Desktop from https://docs.docker.com/desktop/install/windows-install/ and configure it to use WSL (it's the default option).
+2. Install Docker Desktop from [here](https://docs.docker.com/desktop/install/windows-install/) and configure it to use WSL (this is the default option).
 
-3. Install the USBIPD-WIN project by donwloading the `.msi` file from https://github.com/dorssel/usbipd-win/releases and executing it.
+3. Download and install the USBIPD-WIN project by obtaining the `.msi` file from [this link](https://github.com/dorssel/usbipd-win/releases) and executing it.
 
-4. Plug your RTL-SDR v4 USB dongle.
+4. Plug in your RTL-SDR v4 USB dongle.
 
-5. List all of the USB devices connected to Windows by opening PowerShell in administrator mode and entering the following command:
-
+5. List all USB devices connected to your system by opening PowerShell in administrator mode and running the following command:
     ```
     usbipd list
     ```
 
-    Take note of the Bus and Device of your dongle (appears as `Realtek Semiconductor Corp. RTL2838 DVB-T`).
+    Identify your dongle, which will appear as `Realtek Semiconductor Corp. RTL2838 DVB-T`. Make a note of its Bus and Device IDs.
 
-6. Before attaching the USB device, the command `usbipd bind` must be used to share the device, allowing it to be attached to WSL. This requires administrator privileges. Select the bus ID of the device you would like to use in WSL and run the following command:
-
+6. Use the `usbipd bind` command to share the device, allowing it to be attached to WSL. Administrator privileges are required for this step. Replace `3-4` with the actual Bus and Device ID of your device:
     ```
     usbipd bind --busid 3-4
     ```
 
-Change `3-4` by the actual Bus and Device ID from the previous step.
-
-7. To attach the USB device, run the following command. (You no longer need to use an elevated administrator prompt):
-
+7. Attach the USB device to WSL (this step does not require an administrator prompt):
     ```
     usbipd attach --wsl --busid <busid>
     ```
 
-    Here, `<busid>` will be the same that you specified in the previous step.
+    Replace `<busid>` with the same Bus number - Device ID you recorded in the previous step.
 
-8. Now, from the WSL command line, run `lsusb` to list the attached USB devices:
-
+8. Verify the attached USB devices from the WSL command line by running
+    ```
+    lsusb
+    ```
+    in you terminal. You will get something like:
     ```
     Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
     Bus 003 Device 004: ID 0b05:193b ASUSTek Computer, Inc. ITE Device(8295)
-    Bus 003 Device 003: ID 3277:0018 Sonix Technology Co., Ltd. USB2.0 FHD UVC WebCam
     Bus 003 Device 002: ID 0b05:19b6 ASUSTek Computer, Inc. N-KEY Device
     Bus 003 Device 004: ID 0bda:2838 Realtek Semiconductor Corp. RTL2838 DVB-T
     ```
 
-The dongle is identified as `Realtek Semiconductor Corp. RTL2838 DVB-T`. Take note of the bus number and the device ID. For instance, if your dongle appears at `Bus 003 Device 004: ...` then your device can be found at `/dev/bus/usb/003/004`.
+    Your dongle should appear as `Realtek Semiconductor Corp. RTL2838 DVB-T`. Record its bus number and device ID. For example, if your device is listed as `Bus 003 Device 004: ...`, the path to your device will be `/dev/bus/usb/003/004`.
+
 
 ## Setup for GNU/Linux
 
 The commands below have been tested in Ubuntu distributions, but should be similar in other distributions.
 
-1. Install Docker. Check https://docs.docker.com/desktop/install/linux/ for instructions.
+1. Install and run Docker. Check https://docs.docker.com/desktop/install/linux/ for instructions.
 
-2. Use `lsusb` to get the address of your device:
+2. Plug in your RTL-SDR v4 USB dongle.
+
+3. Use `lsusb` to get the address of your device:
 
     ```
     Bus 002 Device 002: ID 8087:8002 Intel Corp. 
@@ -83,17 +106,17 @@ The commands below have been tested in Ubuntu distributions, but should be simil
     Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
     ```
 
-The dongle is identified as `Realtek Semiconductor Corp. RTL2838 DVB-T`. Take note of the bus number and the device ID. For instance, if your dongle appears at `Bus 003 Device 004: ...` then your device can be found at `/dev/bus/usb/003/004`.
+    The dongle is identified as `Realtek Semiconductor Corp. RTL2838 DVB-T`. Take note of the bus number and the device ID. For instance, if your dongle appears at `Bus 003 Device 004: ...` then your device can be found at `/dev/bus/usb/003/004`.
 
-## Download and use the Docker image
+# Download and use the Docker image
 
-Download the Docker image. From your terminal:
+To download the Docker image, run the following command in your terminal:
 
 ```
 docker pull carlesfernandez/gnsssdr-telecorenta:latest
 ```
 
-Check that you can run it:
+Verify that the image is functioning correctly by executing:
 ```
 docker run -it --rm carlesfernandez/gnsssdr-telecorenta gnss-sdr --version
 ```
@@ -103,9 +126,8 @@ You should get something similar to:
 gnss-sdr version 0.0.19.git-next-ff11347a0
 ```
 
-Connect your USB dongle.
+You are now ready to use the image. Navigate to your preferred working directory, copy your configuration file there (e.g., `rtl.conf`, see an example of its content below), and run the following command:
 
-Now you are ready to use the image. Go to your favorite working folder, copy your configuration file there (for instance, `rtl.conf`) and run the following command:
 
 ```
 docker run -it --rm -v $PWD:/home \
@@ -114,9 +136,13 @@ docker run -it --rm -v $PWD:/home \
   gnss-sdr --c=./rtl.conf
 ```
 
-where `xxx` and `yyy` are the bus number and the device ID of the previous steps. The GNSS receiver should start working.
+In this command, `xxx` and `yyy` represent the bus number and device ID obtained in the previous steps. The software-defined GNSS receiver should now start operating.
 
-## Example of configuration file
+Please note that the antenna must have a clear line of sight to a significant portion of the sky to receive signals from a sufficient number of satellites for computing Position, Velocity, and Time (PVT) solutions.
+
+# Example of a GNSS-SDR configuration file
+
+Below is a sample configuration file for GNSS-SDR:
 
 ```
 [GNSS-SDR]
