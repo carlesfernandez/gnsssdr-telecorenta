@@ -43,6 +43,16 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get install -
   nano \
   protobuf-compiler \
   python3-mako \
+  texlive-latex-base \
+  texlive-fonts-recommended \
+  texlive-font-utils \
+  texlive-pictures \
+  epstool \
+  fig2dev \
+  octave \
+  pstoedit \
+  gnuplot-x11 \
+  fonts-freefont-otf \
   && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ENV APPDATA=/root
