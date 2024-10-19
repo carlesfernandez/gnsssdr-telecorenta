@@ -54,8 +54,9 @@ involves:
 To proceed, you will need an RTL-SDR v4 dongle and an **active** GPS antenna. An
 _active_ antenna contains a built-in Low Noise Amplifier (LNA) that requires a
 DC power supply delivered through the coaxial cable. Fortunately, the RTL-SDR v4
-can supply this power. Simply connect your antenna to the USB dongle, and the
-software configuration will handle the rest.
+can supply this power. Simply connect your
+[GPS antenna](https://es.rs-online.com/web/p/antenas-gps/1372773) to the USB
+dongle, and the software configuration will handle the rest.
 
 **When running the receiver, ensure that the antenna is placed where it has a
 clear line of sight to a significant portion of the sky.**
