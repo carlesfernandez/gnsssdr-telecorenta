@@ -78,12 +78,17 @@ later (Build 19041 and higher) or Windows 11.
    [here](https://docs.docker.com/desktop/install/windows-install/) and
    configure it to use WSL (this is the default option).
 
-3. Download and install the USBIPD-WIN project by obtaining the `.msi` file from
+3. For the edition of GNSS-SDR configuration files, you will need a text editor.
+   Suggested ones are [Visual Studio Code](https://code.visualstudio.com/),
+   [Notepad++](https://notepad-plus-plus.org/), or
+   [EditPad Lite](https://www.editpadlite.com/).
+
+4. Download and install the USBIPD-WIN project by obtaining the `.msi` file from
    [this link](https://github.com/dorssel/usbipd-win/releases) and executing it.
 
-4. Plug in your RTL-SDR v4 USB dongle.
+5. Plug in your RTL-SDR v4 USB dongle.
 
-5. List all USB devices connected to your system by opening PowerShell in
+6. List all USB devices connected to your system by opening PowerShell in
    administrator mode and running the following command:
 
    ```
@@ -94,7 +99,7 @@ later (Build 19041 and higher) or Windows 11.
    `Realtek Semiconductor Corp. RTL2838 DVB-T`. Make a note of its Bus and
    Device IDs.
 
-6. Use the `usbipd bind` command to share the device, allowing it to be attached
+7. Use the `usbipd bind` command to share the device, allowing it to be attached
    to WSL. Administrator privileges are required for this step. Replace `3-4`
    with the actual Bus and Device ID of your device:
 
@@ -102,7 +107,7 @@ later (Build 19041 and higher) or Windows 11.
    usbipd bind --busid 3-4
    ```
 
-7. Attach the USB device to WSL (this step does not require an administrator
+8. Attach the USB device to WSL (this step does not require an administrator
    prompt):
 
    ```
@@ -112,7 +117,7 @@ later (Build 19041 and higher) or Windows 11.
    Replace `<busid>` with the same Bus number - Device ID you recorded in the
    previous step.
 
-8. Verify the attached USB devices from the WSL command line by running
+9. Verify the attached USB devices from the WSL command line by running
 
    ```
    lsusb
@@ -130,7 +135,8 @@ later (Build 19041 and higher) or Windows 11.
    Your dongle should appear as `Realtek Semiconductor Corp. RTL2838 DVB-T`.
    Record its bus number and device ID. For example, if your device is listed as
    `Bus 003 Device 004: ...`, the path to your device will be
-   `/dev/bus/usb/003/004`.
+   `/dev/bus/usb/003/004`. **This is the path you need to use when running the
+   Docker image, as [shown below](#download-and-use-the-docker-image).**
 
 ## Setup for GNU/Linux
 
@@ -156,7 +162,8 @@ similar in other distributions.
    The dongle is identified as `Realtek Semiconductor Corp. RTL2838 DVB-T`. Take
    note of the bus number and the device ID. For instance, if your dongle
    appears at `Bus 003 Device 004: ...` then your device can be found at
-   `/dev/bus/usb/003/004`.
+   `/dev/bus/usb/003/004`. **This is the path you need to use when running the
+   Docker image, as [shown below](#download-and-use-the-docker-image).**
 
 # Download and use the Docker image
 
@@ -199,7 +206,10 @@ computing Position, Velocity, and Time (PVT) solutions.
 
 # Example of a GNSS-SDR configuration file
 
-Below is a sample configuration file for GNSS-SDR:
+Below is a sample configuration file for GNSS-SDR. Please copy and paste it into
+a plain text file using your preferred text editor, and save it in the folder
+from which you are running the Docker image. The suggested file name is
+`rtl.conf`.
 
 ```
 [GNSS-SDR]
