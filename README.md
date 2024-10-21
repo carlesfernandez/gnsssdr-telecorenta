@@ -58,6 +58,11 @@ can supply this power. Simply connect your
 [GPS antenna](https://es.rs-online.com/web/p/antenas-gps/1372773) to the USB
 dongle, and the software configuration will handle the rest.
 
+When connecting the SMA adapters, please make sure the male and female
+connectors are correctly aligned before gently tightening them. If possible, use
+a torque wrench to tighten the connectors. Be careful not to overload the torque
+lever to avoid damaging the connector.
+
 **When running the receiver, ensure that the antenna is placed where it has a
 clear line of sight to a significant portion of the sky.**
 
@@ -140,8 +145,8 @@ later (Build 19041 and higher) or Windows 11.
 
 ## Setup for GNU/Linux
 
-The commands below have been tested in Ubuntu distributions, but should be
-similar in other distributions.
+The commands below have been tested in Ubuntu, but should be similar in other
+GNU/Linux distributions.
 
 1. Install and run Docker. Check https://docs.docker.com/desktop/install/linux/
    for instructions.
@@ -164,6 +169,29 @@ similar in other distributions.
    appears at `Bus 003 Device 004: ...` then your device can be found at
    `/dev/bus/usb/003/004`. **This is the path you need to use when running the
    Docker image, as [shown below](#download-and-use-the-docker-image).**
+
+**Note for Raspberry Pi 5 users**: You may need to blacklist the kernel module
+`dvb_usb_rtl28xxu`. To do this, run
+
+```
+sudo nano /etc/modprobe.d/blacklist-rtl.conf
+```
+
+Add the following lines to the file:
+
+```
+blacklist dvb_usb_rtl28xxu
+blacklist rtl2832
+blacklist rtl2830
+```
+
+After saving the file and exiting the editor, reboot the system using:
+
+```
+sudo shutdown -r now
+```
+
+Once the system restarts, the RTL-SDR v4 USB dongle will be ready for use.
 
 # Download and use the Docker image
 
@@ -192,6 +220,7 @@ example of its content below), and run the following command:
 ```
 docker run -it --rm -v $PWD:/home \
   --device=/dev/bus/usb/xxx/yyy:/dev/bus/usb/xxx/yyy \
+  -e TZ=Europe/Madrid \
   carlesfernandez/gnsssdr-telecorenta \
   gnss-sdr --c=./rtl.conf
 ```
@@ -222,10 +251,7 @@ SignalSource.implementation=Osmosdr_Signal_Source
 SignalSource.item_type=gr_complex
 SignalSource.sampling_frequency=2000000
 SignalSource.freq=1575420000
-SignalSource.gain=60
-SignalSource.rf_gain=60
-SignalSource.if_gain=60
-;SignalSource.AGC_enabled=true
+SignalSource.AGC_enabled=true
 SignalSource.osmosdr_args=rtl,bias=1
 
 ;######### SIGNAL_CONDITIONER CONFIG ############
@@ -238,8 +264,7 @@ Channels.in_acquisition=1
 ;######### ACQUISITION GLOBAL CONFIG ############
 Acquisition_1C.implementation=GPS_L1_CA_PCPS_Acquisition
 Acquisition_1C.item_type=gr_complex
-;Acquisition_1C.pfa=0.1
-Acquisition_1C.threshold=2.4
+Acquisition_1C.pfa=0.01
 Acquisition_1C.doppler_max=5000
 Acquisition_1C.doppler_step=250
 
@@ -247,7 +272,7 @@ Acquisition_1C.doppler_step=250
 Tracking_1C.implementation=GPS_L1_CA_DLL_PLL_Tracking
 Tracking_1C.item_type=gr_complex
 Tracking_1C.pll_bw_hz=40.0
-Tracking_1C.dll_bw_hz=5.0
+Tracking_1C.dll_bw_hz=4.0
 
 ;######### TELEMETRY DECODER GPS CONFIG ############
 TelemetryDecoder_1C.implementation=GPS_L1_CA_Telemetry_Decoder
@@ -262,4 +287,5 @@ PVT.output_rate_ms=100
 PVT.display_rate_ms=500
 PVT.iono_model=Broadcast
 PVT.trop_model=Saastamoinen
+PVT.show_local_time_zone=true
 ```
