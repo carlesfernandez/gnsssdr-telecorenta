@@ -22,7 +22,7 @@ load('./acq_dump_G_1C_ch_0_9_sat_22.mat');  % <-- REPLACE THIS FILE WITH YOU ACT
 f = int32(-doppler_max):int32(doppler_step):int32(doppler_max)-int32(doppler_step);
 tau = linspace(0, 1023, size(acq_grid, 1));
 
-hf = figure('visible', 'off');   % <-- REPLACE with hf = figure; IF YOU ARE IN THE GUI INTERFACE
+hf = figure('visible', 'off');   % <-- REPLACE WITH hf = figure; IF YOU ARE IN THE GUI INTERFACE
 
 surf(f, tau, acq_grid);
 
