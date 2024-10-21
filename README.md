@@ -322,7 +322,7 @@ Here’s an example on how to use it:
 3. Adapt the example script provided at
    [acquisition_grid.m](./octave_scripts/acquisition_grid.m) to your specific
    needs (make sure to set the correct `.mat` filename obtained by GNSS-SDR in
-   line 21) and save it in your working folder.
+   line 20) and save it in your working folder.
 4. Run GNU Octave from the Docker image with the following command:
    ```
    docker run -it --rm -v $PWD:/home carlesfernandez/gnsssdr-telecorenta octave --no-gui acquisition_grid.m
