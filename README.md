@@ -227,9 +227,12 @@ docker run -it --rm -v $PWD:/home \
 ```
 
 In this command, `xxx` and `yyy` represent the bus number and device ID obtained
-in the previous steps. The software-defined GNSS receiver should now start
-operating. Stop the receiver at any time by pressing key `q` and then key
-`[ENTER]`.
+in the previous steps. Adjust your
+[TZ identifier](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) as
+required to obtain time solutions adapted to your time zone.
+
+The software-defined GNSS receiver should now start operating. Stop the receiver
+at any time by pressing key `q` and then key `[ENTER]`.
 
 Please note that the antenna must have a clear line of sight to a significant
 portion of the sky to receive signals from a sufficient number of satellites for
