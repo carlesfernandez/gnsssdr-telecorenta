@@ -60,9 +60,9 @@ can supply this power. Simply connect your
 dongle, and the software configuration will handle the rest.
 
 When connecting the SMA adapters, please make sure the male and female
-connectors are correctly aligned before gently tightening them. If possible, use
-a torque wrench to tighten the connectors. Be careful not to overload the torque
-lever to avoid damaging the connector.
+connectors are correctly aligned before **gently** tightening them. If possible,
+use a torque wrench to tighten the connectors. Be careful not to overload the
+torque lever to avoid damaging the connector.
 
 **When running the receiver, ensure that the antenna is placed where it has a
 clear line of sight to a significant portion of the sky.**
