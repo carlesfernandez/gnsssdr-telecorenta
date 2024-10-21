@@ -3,6 +3,7 @@
 .git
 .cache
 .gitignore
+octave_scripts
 pics
 README.md
 LICENSE

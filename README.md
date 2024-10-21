@@ -34,6 +34,7 @@ Table of Contents:
   - [Setup for GNU/Linux](#setup-for-gnulinux)
 - [Download and use the Docker image](#download-and-use-the-docker-image)
 - [Example of a GNSS-SDR configuration file](#example-of-a-gnss-sdr-configuration-file)
+- [Plotting results with GNU Octave](#plotting-results-with-gnu-octave)
 
 # Preparing your setup
 
@@ -227,7 +228,8 @@ docker run -it --rm -v $PWD:/home \
 
 In this command, `xxx` and `yyy` represent the bus number and device ID obtained
 in the previous steps. The software-defined GNSS receiver should now start
-operating.
+operating. Stop the receiver at any time by pressing key `q` and then key
+`[ENTER]`.
 
 Please note that the antenna must have a clear line of sight to a significant
 portion of the sky to receive signals from a sufficient number of satellites for
@@ -238,7 +240,8 @@ computing Position, Velocity, and Time (PVT) solutions.
 Below is a sample configuration file for GNSS-SDR. Please copy and paste it into
 a plain text file using your preferred text editor, and save it in the folder
 from which you are running the Docker image. The suggested file name is
-`rtl.conf`.
+`rtl.conf`. For further details, refer to the
+[GNSS-SDR configuration documentation](https://gnss-sdr.org/docs/sp-blocks/).
 
 ```
 [GNSS-SDR]
@@ -289,3 +292,42 @@ PVT.iono_model=Broadcast
 PVT.trop_model=Saastamoinen
 PVT.show_local_time_zone=true
 ```
+
+# Plotting results with GNU Octave
+
+GNSS-SDR can store some of its internal processing results in `.mat` files,
+which are suitable for further analysis and visual representation using tools
+such as MATLAB (commercial license) or GNU Octave (free and open-source). If you
+already have either of these tools installed, you can use their GUI for an
+improved user experience. However, if you don’t, this Docker image already
+includes GNU Octave, so there’s no need to install additional software on your
+host machine.
+
+Here’s an example on how to use it:
+
+1. Configure GNSS-SDR to store acquisition intermediate results by adding the
+   following lines to your configuration file:
+
+   ```
+   Acquisition_1C.dump=true
+   Acquisition_1C.dump_filename=acq_dump
+   Acquisition_1C.dump_channel=0
+   ```
+
+   For further details, see the
+   [GNSS-SDR documentation](https://gnss-sdr.org/docs/sp-blocks/acquisition/#plotting-results-with-matlaboctave).
+
+2. Run GNSS-SDR as described above for 2-3 minutes. Remember to stop the
+   receiver by pressing key `q`and then key `[ENTER]`.
+3. Adapt the example script provided at
+   [acquisition_grid.m](./octave_scripts/acquisition_grid.m) to your specific
+   needs (make sure to set the correct `.mat` filename obtained by GNSS-SDR in
+   line 21) and save it in your working folder.
+4. Run GNU Octave from the Docker image with the following command:
+   ```
+   docker run -it --rm -v $PWD:/home carlesfernandez/gnsssdr-telecorenta octave --no-gui acquisition_grid.m
+   ```
+5. Convert the results to a PDF for easier visualization:
+   ```
+   docker run -it --rm -v $PWD:/home carlesfernandez/gnsssdr-telecorenta epspdf acq_result.eps acq_result.pdf
+   ```
