@@ -53,6 +53,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get install -
   pstoedit \
   gnuplot-x11 \
   fonts-freefont-otf \
+  wget \
   && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ENV APPDATA=/root
