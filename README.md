@@ -129,7 +129,7 @@ later (Build 19041 and higher) or Windows 11.
    lsusb
    ```
 
-   in you terminal. You will get something like:
+   in your terminal. You will get something like:
 
    ```
    Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
