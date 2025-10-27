@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: 2024, Carles Fernandez-Prades <cfernandez@cttc.es>
 # SPDX-License-Identifier: MIT
 
-FROM ubuntu:oracular
-LABEL version="1.0" description="GNSS-SDR image for the Telecorenta Workshop" maintainer="cfernandez@cttc.es"
+FROM ubuntu:questing
+LABEL version="2.0" description="GNSS-SDR image for the Telecorenta Workshop" maintainer="cfernandez@cttc.es"
 
 WORKDIR /build_dir
 
